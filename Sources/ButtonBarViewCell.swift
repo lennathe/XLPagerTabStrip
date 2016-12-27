@@ -26,6 +26,7 @@ import Foundation
 
 open class ButtonBarViewCell: UICollectionViewCell {
     
+    @IBOutlet open var indicator : UIView!
     @IBOutlet open var imageView: UIImageView!
     @IBOutlet open lazy var label: UILabel! = { [unowned self] in
         let label = UILabel(frame: self.contentView.bounds)
@@ -33,7 +34,7 @@ open class ButtonBarViewCell: UICollectionViewCell {
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 14.0)
         return label
-    }()
+        }()
     
     open override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
@@ -42,4 +43,11 @@ open class ButtonBarViewCell: UICollectionViewCell {
             contentView.addSubview(label)
         }
     }
+    
+    override open func awakeFromNib() {
+        super.awakeFromNib()
+        indicator.layer.cornerRadius = 22.5
+        indicator.layer.masksToBounds = true
+    }
+    
 }

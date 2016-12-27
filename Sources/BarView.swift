@@ -29,7 +29,7 @@ open class BarView: UIView {
     open lazy var selectedBar: UIView = { [unowned self] in
         let selectedBar = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height))
         return selectedBar
-    }()
+        }()
     
     var optionsCount = 1 {
         willSet(newOptionsCount) {
