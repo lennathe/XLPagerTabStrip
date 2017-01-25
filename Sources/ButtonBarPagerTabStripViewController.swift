@@ -69,6 +69,7 @@ public struct ButtonBarPagerTabStripSettings {
 
 open class ButtonBarPagerTabStripViewController: PagerTabStripViewController, PagerTabStripDataSource, PagerTabStripIsProgressiveDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
     
+    var selectedIndex : Int = 0
     open var settings = ButtonBarPagerTabStripSettings()
     
     lazy open var buttonBarItemSpec: ButtonBarItemSpec<ButtonBarViewCell> = .nibFile(nibName: "ButtonCell", bundle: Bundle(for: ButtonBarViewCell.self), width:{ [weak self] (childItemInfo) -> CGFloat in
@@ -227,10 +228,12 @@ open class ButtonBarPagerTabStripViewController: PagerTabStripViewController, Pa
             
             changeCurrentIndex(oldCell, newCell, true)
         }
+        
     }
     
     open func updateIndicator(for viewController: PagerTabStripViewController, fromIndex: Int, toIndex: Int, withProgressPercentage progressPercentage: CGFloat, indexWasChanged: Bool) {
-        guard shouldUpdateButtonBarView else { return }
+        guard shouldUpdateButtonBarView else {
+            return }
         buttonBarView.move(fromIndex: fromIndex, toIndex: toIndex, progressPercentage: progressPercentage, pagerScroll: .yes)
         
         let oldCell = buttonBarView.cellForItem(at: IndexPath(item: currentIndex != fromIndex ? fromIndex : toIndex, section: 0)) as? ButtonBarViewCell
@@ -255,6 +258,7 @@ open class ButtonBarPagerTabStripViewController: PagerTabStripViewController, Pa
             changeCurrentIndexProgressive(oldCell, newCell, progressPercentage, indexWasChanged, true)
         }
         
+        selectedIndex = currentIndex
     }
     
     // MARK: - UICollectionViewDelegateFlowLayut
@@ -269,7 +273,7 @@ open class ButtonBarPagerTabStripViewController: PagerTabStripViewController, Pa
     open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.item != currentIndex else { return }
         
-        buttonBarView.moveTo(index: indexPath.item, animated: true, swipeDirection: .none, pagerScroll: .yes)
+        buttonBarView.moveTo(index: indexPath.item, animated: true, swipeDirection: .none, pagerScroll: .scrollOnlyIfOutOfScreen)
         shouldUpdateButtonBarView = false
         
         let oldCell = buttonBarView.cellForItem(at: IndexPath(item: currentIndex, section: 0)) as? ButtonBarViewCell
@@ -284,6 +288,10 @@ open class ButtonBarPagerTabStripViewController: PagerTabStripViewController, Pa
         UIView.animate(withDuration: 0.3, animations: { [weak self] in
             newCell?.indicator.backgroundColor? = (self?.settings.style.selectedBarBackgroundColor)!
             oldCell?.indicator.backgroundColor? = UIColor.clear
+            
+            }, completion: { (bool) in
+                self.selectedIndex = indexPath.item
+                collectionView.reloadData()
         })
         
         if pagerBehaviour.isProgressiveIndicator {
@@ -297,6 +305,8 @@ open class ButtonBarPagerTabStripViewController: PagerTabStripViewController, Pa
             }
         }
         moveToViewController(at: indexPath.item)
+        
+        
     }
     
     // MARK: - UICollectionViewDataSource
@@ -315,14 +325,14 @@ open class ButtonBarPagerTabStripViewController: PagerTabStripViewController, Pa
         cell.label.text = indicatorInfo.title
         cell.label.font = settings.style.buttonBarItemFont
         
-        
-        if(indexPath.row == currentIndex){
+        if(indexPath.row == selectedIndex){
             cell.label.textColor = settings.style.buttonBarItemTitleColorSelected
             cell.label.font = settings.style.buttonBarItemSelectedFont
             cell.indicator.backgroundColor = settings.style.selectedBarBackgroundColor
         }else{
             cell.label.textColor = settings.style.buttonBarItemTitleColor ?? cell.label.textColor
             cell.label.font = settings.style.buttonBarItemFont
+            cell.indicator.backgroundColor = UIColor.clear
         }
         
         //cell.label.textColor = settings.style.buttonBarItemTitleColor ?? cell.label.textColor

@@ -69,7 +69,7 @@ open class ButtonBarView: UICollectionView {
         backgroundView = UIView()
         backgroundView?.addSubview(selectedBar)
         
-        self.contentInset = UIEdgeInsets.init(top: 0, left: 65, bottom: 0, right: 65)
+        self.contentInset = UIEdgeInsets.init(top: 0, left: 0, bottom: 0, right: 0)
         /*}else if selectedBarStyling == .lineBelow{
          addSubview(selectedBar)
          }*/
@@ -90,9 +90,9 @@ open class ButtonBarView: UICollectionView {
     open func moveTo(index: Int, animated: Bool, swipeDirection: SwipeDirection, pagerScroll: PagerScroll) {
         selectedIndex = index
         
-        if selectedBarStyling != .hidden{
-            updateSelectedBarPosition(animated, swipeDirection: swipeDirection, pagerScroll: pagerScroll)
-        }
+        //if selectedBarStyling != .hidden{
+        updateSelectedBarPosition(animated, swipeDirection: swipeDirection, pagerScroll: pagerScroll)
+        //}
     }
     
     open func move(fromIndex: Int, toIndex: Int, progressPercentage: CGFloat,pagerScroll: PagerScroll) {
@@ -141,27 +141,27 @@ open class ButtonBarView: UICollectionView {
     
     open func updateSelectedBarPosition(_ animated: Bool, swipeDirection: SwipeDirection, pagerScroll: PagerScroll) -> Void {
         
-        if selectedBarStyling != .hidden{
-            var selectedBarFrame = selectedBar.frame
-            
-            let selectedCellIndexPath = IndexPath(item: selectedIndex, section: 0)
-            let attributes = layoutAttributesForItem(at: selectedCellIndexPath)
-            let selectedCellFrame = attributes!.frame
-            
-            updateContentOffset(animated: animated, pagerScroll: pagerScroll, toFrame: selectedCellFrame, toIndex: (selectedCellIndexPath as NSIndexPath).row)
-            
-            selectedBarFrame.size.width = selectedCellFrame.size.width
-            selectedBarFrame.origin.x = selectedCellFrame.origin.x
-            
-            if animated {
-                UIView.animate(withDuration: 0.3, animations: { [weak self] in
-                    self?.selectedBar.frame = selectedBarFrame
-                })
-            }
-            else {
-                selectedBar.frame = selectedBarFrame
-            }
+        // if selectedBarStyling != .hidden{
+        var selectedBarFrame = selectedBar.frame
+        
+        let selectedCellIndexPath = IndexPath(item: selectedIndex, section: 0)
+        let attributes = layoutAttributesForItem(at: selectedCellIndexPath)
+        let selectedCellFrame = attributes!.frame
+        
+        updateContentOffset(animated: animated, pagerScroll: pagerScroll, toFrame: selectedCellFrame, toIndex: (selectedCellIndexPath as NSIndexPath).row)
+        
+        selectedBarFrame.size.width = selectedCellFrame.size.width
+        selectedBarFrame.origin.x = selectedCellFrame.origin.x
+        
+        if animated {
+            UIView.animate(withDuration: 0.3, animations: { [weak self] in
+                self?.selectedBar.frame = selectedBarFrame
+            })
         }
+        else {
+            selectedBar.frame = selectedBarFrame
+        }
+        //}
         
     }
     
