@@ -98,7 +98,7 @@ open class ButtonBarView: UICollectionView {
     open func move(fromIndex: Int, toIndex: Int, progressPercentage: CGFloat,pagerScroll: PagerScroll) {
         selectedIndex = progressPercentage > 0.5 ? toIndex : fromIndex
         
-        if selectedBarStyling != .hidden{
+        //if selectedBarStyling != .hidden{
             let fromFrame = layoutAttributesForItem(at: IndexPath(item: fromIndex, section: 0))!.frame
             let numberOfItems = dataSource!.collectionView(self, numberOfItemsInSection: 0)
             
@@ -135,7 +135,7 @@ open class ButtonBarView: UICollectionView {
             
             let animated = abs(contentOffset.x - targetContentOffset) > 30 || (fromIndex == toIndex)
             setContentOffset(CGPoint(x: targetContentOffset, y: 0), animated: animated)
-        }
+        //}
         
     }
     
