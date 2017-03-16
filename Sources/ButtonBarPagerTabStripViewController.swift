@@ -242,16 +242,25 @@ open class ButtonBarPagerTabStripViewController: PagerTabStripViewController, Pa
         oldCell?.label.font = settings.style.buttonBarItemFont
         newCell?.label.font = settings.style.buttonBarItemSelectedFont
         
-        oldCell?.label.textColor = settings.style.buttonBarItemTitleColor;
-        newCell?.label.textColor = settings.style.buttonBarItemTitleColorSelected;
+        //oldCell?.label.textColor = settings.style.buttonBarItemTitleColor;
+        //newCell?.label.textColor = settings.style.buttonBarItemTitleColorSelected;
         
-        if progressPercentage < 0.5{
+        
+        if progressPercentage > 0.9{
+            
+            oldCell?.label.textColor = settings.style.buttonBarItemTitleColor;
+            newCell?.label.textColor = settings.style.buttonBarItemTitleColorSelected;
+            self.selectedIndex = self.currentIndex
+            self.buttonBarView.reloadData()
+        }
+        
+        /*if progressPercentage < 0.5{
             oldCell?.indicator.backgroundColor? = settings.style.selectedBarBackgroundColor.withAlphaComponent(progressPercentage)
             newCell?.indicator.backgroundColor? = settings.style.selectedBarBackgroundColor.withAlphaComponent(1 - progressPercentage)
         }else{
             oldCell?.indicator.backgroundColor? = settings.style.selectedBarBackgroundColor.withAlphaComponent(1 - progressPercentage)
             newCell?.indicator.backgroundColor? = settings.style.selectedBarBackgroundColor.withAlphaComponent(progressPercentage)
-        }
+        }*/
         
         
         if let changeCurrentIndexProgressive = changeCurrentIndexProgressive {
